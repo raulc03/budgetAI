@@ -5,6 +5,7 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
+        tabBarActiveTintColor: '#fff',
         headerShown: false,
         tabBarStyle: {
           backgroundColor: '#111111',
@@ -13,9 +14,9 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
-          tabBarIcon: ({ color, focused }) => (
-            <Ionicons name={focused ? 'home-sharp' : 'home-outline'} color={color} size={24} />
+          title: '',
+          tabBarIcon: ({ focused }) => (
+            <Ionicons name={focused ? 'home-sharp' : 'home-outline'} color="#fff" size={24} />
           ),
         }}
       />

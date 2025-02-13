@@ -22,10 +22,10 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
   },
   category: {
-    flex: 3 / 5,
+    flex: 2 / 4,
   },
   amounts: {
-    flex: 3 / 5,
+    flex: 3 / 4,
     flexDirection: 'row',
     justifyContent: 'space-between',
   }

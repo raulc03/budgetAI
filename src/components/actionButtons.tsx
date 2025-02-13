@@ -6,11 +6,12 @@ export default function ActionButtons() {
   }
   return (
     <View style={styles.container}>
-      <Pressable style={styles.itemContainer}
+      <Pressable style={[styles.itemContainer, { backgroundColor: '#111111' }]}
         onPress={() => onPressButton('Gastos')}>
         <Text style={styles.item}>Gastos</Text>
       </Pressable>
-      <Pressable style={styles.itemContainer} onPress={() => onPressButton('Ingresos')}>
+      <Pressable style={styles.itemContainer}
+        onPress={() => onPressButton('Ingresos')}>
         <Text style={styles.item}>Ingresos</Text>
       </Pressable>
     </View>

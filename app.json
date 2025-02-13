@@ -2,7 +2,7 @@
   "expo": {
     "name": "BudgetAI",
     "slug": "BudgetAI",
-    "version": "1.0.0",
+    "version": "0.0.1",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
@@ -32,7 +32,13 @@
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
         }
-      ]
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "The app accesses your photos to let you upload expenses and incomes."
+        }
+      ],
     ],
     "experiments": {
       "typedRoutes": true

@@ -2,13 +2,17 @@ import { View, StyleSheet } from 'react-native';
 import ActionButtons from './actionButtons';
 import CategoryList from './categoryList';
 
-export default function DetailView() {
+type Props = {
+  user_id: number
+}
+
+export default function DetailView({ user_id }: Props) {
   return (
     <View style={styles.container}>
       {/* ActionButtons */}
       <ActionButtons />
       {/* CategoryList */}
-      <CategoryList />
+      <CategoryList user_id={user_id} />
     </View>
   );
 }
@@ -16,9 +20,12 @@ export default function DetailView() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    minWidth: 350,
+    minHeight: 550,
     justifyContent: 'center',
     backgroundColor: '#fff',
     borderRadius: 10,
-    padding: 10,
+    paddingTop: 10,
+    paddingHorizontal: 10,
   }
 })
