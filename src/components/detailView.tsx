@@ -1,12 +1,14 @@
 import { View, StyleSheet } from 'react-native';
 import ActionButtons from './actionButtons';
 import CategoryList from './categoryList';
+import { useState } from 'react';
 
 type Props = {
   user_id: number
 }
 
 export default function DetailView({ user_id }: Props) {
+
   return (
     <View style={styles.container}>
       {/* ActionButtons */}

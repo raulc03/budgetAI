@@ -11,11 +11,14 @@ AppState.addEventListener('change', (state) => {
 })
 
 export default function LoginScreen() {
+    const [name, setName] = useState<string>('');
+    const [lastName, setLastname] = useState<string>('');
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
 
-    const onSubmit = async () => {
+    //TODO: Pasar lógica a archivo destinado para ello
+    const onSignIn = async () => {
         setLoading(true);
         const { error } = await supabase.auth.signInWithPassword({
             email: email,
@@ -25,36 +28,88 @@ export default function LoginScreen() {
         setLoading(false);
     }
 
+    const registerUser = async (user_id: string | undefined) => {
+        const { error } = await supabase.from('users')
+            .insert([{
+                user_id: user_id,
+                name: name,
+                lastname: lastName,
+                balance: 0
+            }]);
+        if (error) { Alert.alert('Error al registrar usuario') }
+    }
+
+    const onSignUp = async () => {
+        setLoading(true);
+        const { data, error } = await supabase.auth.signUp({
+            email: email,
+            password: password,
+        });
+
+        if (error) Alert.alert("Error en el registro:", error.message);
+        else {
+            await registerUser(data.user?.id);
+        }
+        setLoading(false);
+    };
+
     return (
         <View style={styles.container}>
             <Text style={styles.header}>Bienvenido de Vuelta!</Text>
             <TextInput
                 style={styles.input}
+                autoCapitalize='words'
+                inputMode='text'
+                onChangeText={setName}
+                placeholder='Nombre'
+                placeholderTextColor='#666'
+                value={name} />
+            <TextInput
+                style={styles.input}
+                autoCapitalize='words'
+                inputMode='text'
+                onChangeText={setLastname}
+                placeholder='Apellido'
+                placeholderTextColor='#666'
+                value={lastName} />
+            <TextInput
+                style={styles.input}
+                autoCapitalize='none'
                 inputMode='email'
                 onChangeText={setEmail}
                 placeholder='Email'
+                placeholderTextColor='#666'
                 value={email} />
             <TextInput
                 style={styles.input}
                 onChangeText={setPassword}
                 placeholder='Password'
+                placeholderTextColor='#666'
                 secureTextEntry={true}
                 value={password} />
             <Pressable style={styles.button}
-                onPress={onSubmit}
+                onPress={onSignIn}
                 disabled={loading}
             >
-                <Text>Iniciar sesión</Text>
+                <Text style={{ fontSize: 18, color: '#fff' }}>Iniciar sesión</Text>
             </Pressable>
-        </View>
+            <Pressable style={[styles.button,
+            { backgroundColor: "#111111", marginTop: 0 }]}
+                onPress={onSignUp}
+                disabled={loading}
+            >
+                <Text style={{ fontSize: 18, color: '#fff' }}>Registrar</Text>
+            </Pressable>
+        </View >
     );
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
+        justifyContent: 'flex-start',
         alignItems: 'center',
+        paddingTop: 20,
     },
     header: {
         fontSize: 20,
@@ -64,7 +119,7 @@ const styles = StyleSheet.create({
     input: {
         width: '60%',
         height: 40,
-        borderWidth: 1,
+        borderBottomWidth: 1,
         padding: 10,
         marginVertical: 10,
     },

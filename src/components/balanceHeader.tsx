@@ -1,33 +1,54 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Animated, Pressable, StyleSheet, Text, View } from "react-native";
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import { supabase } from "../api/supabase";
+import { useRef } from "react";
 
 type Props = {
-  amount: string
-  username: string | null
+  user: { name: string, amount: number }
+  logOut: () => void
+  setModalVisible: (visible: boolean) => void
 }
 
-export default function BalanceHeader({ amount, username }: Props) {
-  const display_amount = 'S/ ' + amount
+export default function BalanceHeader({
+  user,
+  logOut,
+  setModalVisible }: Props) {
 
-  const refreshSession = async () => {
-    await supabase.auth.getSession();
-  }
+  const scale = useRef(new Animated.Value(1)).current;
 
-  if (username) {
-    refreshSession();
-  }
+  const handlePressIn = () => {
+    Animated.timing(scale, {
+      toValue: 1.2,
+      duration: 150,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const handlePressOut = () => {
+    Animated.timing(scale, {
+      toValue: 1,
+      duration: 150,
+      useNativeDriver: true,
+    }).start();
+  };
 
   return (
     <View style={styles.container}>
-      <MaterialCommunityIcons name="menu" size={30} color="black" />
-      <View style={{ flexDirection: 'row' }}>
-        <Text style={styles.balance_text}>Balance</Text>
-        <Text style={styles.amount_text}>{display_amount}</Text>
-      </View>
+      <Pressable onPress={logOut}>
+        <MaterialCommunityIcons name="logout" size={26} color="black" />
+      </Pressable>
+      <Pressable
+        onPress={() => { setModalVisible(true) }}
+        onPressIn={handlePressIn}
+        onPressOut={handlePressOut}
+      >
+        <Animated.View style={{ flexDirection: 'row', transform: [{ scale }] }}>
+          <Text style={styles.balance_text}>Balance</Text>
+          <Text style={styles.amount_text}>{'S/ ' + user.amount.toFixed(2)}</Text>
+        </Animated.View>
+      </Pressable>
       <Pressable>
         {/*<MaterialCommunityIcons name="face-man-outline" size={30} color="black" />*/}
-        {username && <Text>{username}</Text>}
+        {user.name && <Text>{user.name}</Text>}
       </Pressable>
     </View>
   )
@@ -50,5 +71,5 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginHorizontal: 5,
     fontWeight: 'semibold'
-  }
+  },
 })

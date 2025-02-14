@@ -29,11 +29,12 @@ export default function CategoryList({ user_id }: Props) {
       p_user_id: user_id
     });
     if (error) {
-      console.log("No se pudo obtener información de las categorías: ", error);
-      Alert.alert("Error al obtener categorías");
+      Alert.alert("Error al obtener categorías", error.message);
     }
     else {
-      setCategoriesData(data);
+      if (JSON.stringify(data) !== JSON.stringify(categoriesData)) {
+        setCategoriesData(data);
+      }
     }
   }
 
@@ -83,6 +84,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginVertical: 10,
+    paddingHorizontal: 10,
   },
   circleContainer: {
     flex: 1,
