@@ -1,17 +1,16 @@
-import { Animated, Pressable, StyleSheet, Text, View } from "react-native";
+import { Alert, Animated, Pressable, StyleSheet, Text, View } from "react-native";
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { useRef } from "react";
+import { useLoading } from "../context/LoadingContext";
+import { useUser } from "../context/UserContext";
+import { useModal } from "../context/ModalContext";
+import { supabase } from "../api/supabase";
 
-type Props = {
-  user: { name: string, amount: number }
-  logOut: () => void
-  setModalVisible: (visible: boolean) => void
-}
-
-export default function BalanceHeader({
-  user,
-  logOut,
-  setModalVisible }: Props) {
+export default function BalanceHeader() {
+  console.log("Renderizando BalanceHeader");
+  const { setIsLoading } = useLoading();
+  const { user } = useUser();
+  const { setIsModal } = useModal();
 
   const scale = useRef(new Animated.Value(1)).current;
 
@@ -31,26 +30,38 @@ export default function BalanceHeader({
     }).start();
   };
 
+  const logOut = async () => {
+    setIsLoading(true);
+    const { error } = await supabase.auth.signOut();
+    if (error) Alert.alert(error.message);
+    setIsLoading(false);
+  };
+
   return (
     <View style={styles.container}>
       <Pressable onPress={logOut}>
         <MaterialCommunityIcons name="logout" size={26} color="black" />
       </Pressable>
-      <Pressable
-        onPress={() => { setModalVisible(true) }}
-        onPressIn={handlePressIn}
-        onPressOut={handlePressOut}
-      >
-        <Animated.View style={{ flexDirection: 'row', transform: [{ scale }] }}>
-          <Text style={styles.balance_text}>Balance</Text>
-          <Text style={styles.amount_text}>{'S/ ' + user.amount.toFixed(2)}</Text>
-        </Animated.View>
-      </Pressable>
-      <Pressable>
-        {/*<MaterialCommunityIcons name="face-man-outline" size={30} color="black" />*/}
-        {user.name && <Text>{user.name}</Text>}
-      </Pressable>
-    </View>
+      {user ?
+        <>
+          <Pressable
+            onPress={() => { setIsModal(true) }}
+            onPressIn={handlePressIn}
+            onPressOut={handlePressOut}
+          >
+            <Animated.View style={{ flexDirection: 'row', transform: [{ scale }] }}>
+              <Text style={styles.balance_text}>Balance</Text>
+              <Text style={styles.amount_text}>{'S/ ' + user.balance.toFixed(2)}</Text>
+            </Animated.View>
+          </Pressable>
+          <Pressable>
+            {/*<MaterialCommunityIcons name="face-man-outline" size={30} color="black" />*/}
+            {user.name && <Text>{user.name}</Text>}
+          </Pressable>
+
+        </> :
+        <View>{/*Skeletons*/}</View>}
+    </View >
   )
 };
 

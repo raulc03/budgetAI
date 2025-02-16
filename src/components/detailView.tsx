@@ -1,20 +1,15 @@
 import { View, StyleSheet } from 'react-native';
 import ActionButtons from './actionButtons';
 import CategoryList from './categoryList';
-import { useState } from 'react';
 
-type Props = {
-  user_id: number
-}
-
-export default function DetailView({ user_id }: Props) {
-
+export default function DetailView() {
+  console.log("Renderizando DetailView");
   return (
     <View style={styles.container}>
       {/* ActionButtons */}
       <ActionButtons />
       {/* CategoryList */}
-      <CategoryList user_id={user_id} />
+      <CategoryList />
     </View>
   );
 }

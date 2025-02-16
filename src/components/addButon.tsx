@@ -1,14 +1,34 @@
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Alert, Pressable, StyleSheet } from "react-native";
+import { pickImage } from "../utils/openLibrary";
+import { getUserCategories, registerExpenseOrIncome } from "../api/userService";
+import { useUser } from "../context/UserContext";
 
-type Props = {
-  handlyClassify: () => void;
-}
+export default function AddButton() {
+  console.log("Renderizando AddButton");
+  const { user, userCategoriesList, setUserCategoriesList } = useUser();
 
-export default function AddButton({ handlyClassify }: Props) {
+  const handlePress = async () => {
+    const result = await pickImage();
+
+    if (user && !result.canceled) {
+      const data = await registerExpenseOrIncome(result.assets[0].uri, user?.user_id);
+
+      if (data) {
+        await getUserCategories({
+          user,
+          userCategoriesList,
+          setUserCategoriesList,
+        });
+      } else {
+        Alert.alert('Error al registrar');
+      }
+    }
+  };
+
   return (
     <Pressable style={styles.circleButtonContainer}
-      onPress={handlyClassify}
+      onPress={handlePress}
     >
       <MaterialIcons name="add" size={30} color="black" />
     </Pressable>

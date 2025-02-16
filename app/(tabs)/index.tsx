@@ -1,10 +1,11 @@
 import { StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import HomeScreen from "@/src/screens/homeScreen";
 import LoginScreen from "@/src/screens/loginScreen";
 import { useEffect, useState } from "react";
 import { supabase } from "@/src/api/supabase";
 import { Session } from "@supabase/supabase-js";
+import { HomeContextProvider } from "@/src/context/HomeContextProvider";
+import HomeScreen from "@/src/screens/homeScreen";
 
 export default function Index() {
   const [session, setSession] = useState<Session | null>(null);
@@ -21,7 +22,9 @@ export default function Index() {
   return (
     <SafeAreaView style={styles.container}>
       {session && session.user ?
-        <HomeScreen key={session.user.id} session={session} /> :
+        <HomeContextProvider session={session}>
+          <HomeScreen key={session.user.id} session={session} />
+        </HomeContextProvider> :
         <LoginScreen />}
     </SafeAreaView>
   );

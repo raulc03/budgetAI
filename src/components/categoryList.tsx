@@ -1,42 +1,32 @@
 import { Alert, FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 import TableHeader from "./tableHeader";
-import { supabase } from "../api/supabase";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { useUser } from "../context/UserContext";
+import Loading from "./loading";
+import { categoryUserResponse } from "../types/category";
+import { getUserCategories } from "../api/userService";
+import { useLoading } from "../context/LoadingContext";
 
-type Props = {
-  user_id: number
-}
+export default function CategoryList() {
+  console.log("Renderizando CategoryList");
+  const { isLoading, setIsLoading } = useLoading();
+  const { user, userCategoriesList, setUserCategoriesList } = useUser();
 
-type categoryUserResponse = {
-  category_id: number;
-  category_name: string;
-  category_img_name: string;
-  total_amount: number;
-  max_amount: number;
-}
 
-export default function CategoryList({ user_id }: Props) {
-  const [loading, setLoading] = useState<boolean>(false);
-  const [categoriesData, setCategoriesData] = useState<categoryUserResponse[]>([]);
+  const gettingUserCategories = async () => {
+    if (userCategoriesList.length === 0) {
+      setIsLoading(true);
+    }
+    await getUserCategories({ user, userCategoriesList, setUserCategoriesList });
+
+    if (userCategoriesList.length === 0)
+      setIsLoading(false);
+  }
 
   useEffect(() => {
-    getUserCategory();
-  }, [categoriesData]);
-
-  const getUserCategory = async () => {
-    const { data, error } = await supabase.rpc('get_user_category_totals', {
-      p_user_id: user_id
-    });
-    if (error) {
-      Alert.alert("Error al obtener categorías", error.message);
-    }
-    else {
-      if (JSON.stringify(data) !== JSON.stringify(categoriesData)) {
-        setCategoriesData(data);
-      }
-    }
-  }
+    gettingUserCategories();
+  }, [userCategoriesList]);
 
   const renderItem = (item: any) => {
     const data: categoryUserResponse = item.item;
@@ -66,11 +56,15 @@ export default function CategoryList({ user_id }: Props) {
   return (
     <View style={styles.container}>
       <TableHeader />
-      <FlatList
-        data={categoriesData}
-        renderItem={renderItem}
-        keyExtractor={(item: any) => item.category_id}
-      />
+      {
+        !isLoading ? (
+          <FlatList
+            data={userCategoriesList}
+            renderItem={renderItem}
+            keyExtractor={(item: any) => item.category_id}
+          />
+        ) : <Loading />
+      }
     </View>
   );
 }

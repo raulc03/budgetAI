@@ -1,6 +1,7 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 export default function ActionButtons() {
+  console.log("Renderizando ActionButton");
   const onPressButton = (text: string) => {
     alert("Apretaste:  " + text)
   }
