@@ -1,55 +1,67 @@
-import { Alert, FlatList, Pressable, StyleSheet, Text, View } from "react-native";
+import { FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import TableHeader from "./tableHeader";
 import { useEffect } from "react";
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useUser } from "../context/UserContext";
 import Loading from "./loading";
-import { categoryUserResponse } from "../types/category";
+import { userCategoryResponse } from "../types/category";
 import { getUserCategories } from "../api/userService";
 import { useLoading } from "../context/LoadingContext";
+import { useUserCategory } from "../context/UserCategoryContext";
 
-export default function CategoryList() {
-  console.log("Renderizando CategoryList");
+type CategoryListProps = {
+  isExpenseActive: boolean;
+}
+
+export default function CategoryList({ isExpenseActive }: CategoryListProps) {
   const { isLoading, setIsLoading } = useLoading();
-  const { user, userCategoriesList, setUserCategoriesList } = useUser();
-
+  const { user } = useUser();
+  const { userCategoryList, setUserCategoryList } = useUserCategory();
 
   const gettingUserCategories = async () => {
-    if (userCategoriesList.length === 0) {
+    if (userCategoryList.length === 0) {
       setIsLoading(true);
     }
-    await getUserCategories({ user, userCategoriesList, setUserCategoriesList });
+    await getUserCategories({ user, userCategoryList, setUserCategoryList });
 
-    if (userCategoriesList.length === 0)
+    if (userCategoryList.length === 0)
       setIsLoading(false);
   }
 
   useEffect(() => {
     gettingUserCategories();
-  }, [userCategoriesList]);
+  }, [userCategoryList]);
+
+  const userCategoriesListFiltered = userCategoryList.filter(it => {
+    const type = isExpenseActive ? 'EXPENSE' : 'INCOME';
+    return it.transaction_types === type;
+  });
 
   const renderItem = (item: any) => {
-    const data: categoryUserResponse = item.item;
+    const data: userCategoryResponse = item.item;
     const diff = data.max_amount - data.total_amount;
 
-    const pressCategory = (category_name: string) => {
-      Alert.alert("Categoría: " + category_name);
-    }
-
     return (
-      <Pressable style={styles.itemContainer} onPress={() => pressCategory(data.category_name)}>
+      <View style={styles.itemContainer}>
         <View style={styles.circleContainer}>
           <View style={styles.circle} >
             <MaterialIcons name={data.category_img_name as keyof typeof MaterialIcons}
-              size={24} color="black" />
+              size={28} color="black" />
           </View>
         </View>
         <View style={styles.amountsContainer}>
-          <Text>{decorate_amount(data.max_amount)}</Text>
-          <Text>{decorate_amount(data.total_amount)}</Text>
-          <Text>{decorate_amount(diff)}</Text>
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'flex-start' }}>
+            <Text style={{ fontSize: 16, fontWeight: '700' }}>{data.category_name}</Text>
+          </View>
+          <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+            <TouchableOpacity>
+              <Text style={{ fontSize: 16 }}>{decorate_amount(data.max_amount)}</Text>
+            </TouchableOpacity>
+            <Text>{decorate_amount(data.total_amount)}</Text>
+            <Text>{decorate_amount(diff)}</Text>
+          </View>
         </View>
-      </Pressable>
+      </View>
     )
   };
 
@@ -59,7 +71,7 @@ export default function CategoryList() {
       {
         !isLoading ? (
           <FlatList
-            data={userCategoriesList}
+            data={userCategoriesListFiltered}
             renderItem={renderItem}
             keyExtractor={(item: any) => item.category_id}
           />
@@ -81,8 +93,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   circleContainer: {
-    flex: 1,
     justifyContent: 'center',
+    alignItems: 'center',
   },
   circle: {
     borderRadius: 50,
@@ -91,11 +103,12 @@ const styles = StyleSheet.create({
     width: 60,
     justifyContent: 'center',
     alignItems: 'center',
+    marginRight: 20,
   },
   amountsContainer: {
     flex: 2,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
+    alignItems: 'stretch',
   },
 })
 

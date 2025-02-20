@@ -8,7 +8,7 @@ import User from "../types/user";
 import { useEffect, useState } from "react";
 
 export default function ModalBalance() {
-  const { user } = useUser();
+  const { user, setUser } = useUser();
   const { isModal, setIsModal } = useModal();
   const [balance, setBalance] = useState<string>('');
   const [placeHolderBalance, setPlaceHolderBalance] = useState<string>('');

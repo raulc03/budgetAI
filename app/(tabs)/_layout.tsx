@@ -8,7 +8,7 @@ export default function TabLayout() {
         tabBarActiveTintColor: '#fff',
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: '#111111',
+          backgroundColor: 'rgba(0,0,0,0.25)'
         },
       }}>
       <Tabs.Screen

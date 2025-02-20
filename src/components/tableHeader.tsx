@@ -1,15 +1,25 @@
 import { StyleSheet, Text, View } from "react-native";
 
 export default function TableHeader() {
+  const amount = 'S/ 9,999,999'
   return (
     <View style={styles.container}>
       <View style={styles.category}>
-        <Text>Categorías</Text>
+        <Text>Mensual</Text>
       </View>
-      <View style={styles.amounts}>
-        <Text>Plan.</Text>
-        <Text>Real</Text>
-        <Text>Dif.</Text>
+      <View style={styles.totals}>
+        <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+          <Text style={styles.total_labels}>Planeado</Text>
+          <Text style={styles.total_amounts}>{amount}</Text>
+        </View>
+        <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+          <Text style={styles.total_labels}>Real</Text>
+          <Text style={styles.total_amounts}>{amount}</Text>
+        </View>
+        <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+          <Text style={styles.total_labels}>Diferencia</Text>
+          <Text style={styles.total_amounts}>{amount}</Text>
+        </View>
       </View>
     </View>
   );
@@ -22,11 +32,20 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
   },
   category: {
-    flex: 2 / 4,
+    flex: 1,
+    justifyContent: 'flex-end',
   },
-  amounts: {
-    flex: 3 / 4,
+  totals: {
+    flex: 3,
     flexDirection: 'row',
     justifyContent: 'space-between',
+  },
+  total_labels: {
+    alignSelf: 'flex-start',
+    fontSize: 16,
+    fontWeight: '500'
+  },
+  total_amounts: {
+    fontSize: 13,
   }
 })

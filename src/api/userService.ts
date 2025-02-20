@@ -1,13 +1,13 @@
 import { Alert } from "react-native";
 import User from "../types/user";
 import { supabase } from "./supabase";
-import { categoryUserResponse } from "../types/category";
+import { userCategoryResponse } from "../types/category";
 import { PostgrestSingleResponse, Session } from "@supabase/supabase-js";
 
 type Params = {
     user: User | null;
-    userCategoriesList: categoryUserResponse[];
-    setUserCategoriesList: (categories: categoryUserResponse[]) => void;
+    userCategoryList: userCategoryResponse[];
+    setUserCategoryList: (categories: userCategoryResponse[]) => void;
 }
 
 export const getUser = async (session: Session, setUser: (user: User) => void) => {
@@ -38,7 +38,7 @@ export const getUser = async (session: Session, setUser: (user: User) => void) =
 }
 
 export const getUserCategories = async ({
-    user, userCategoriesList, setUserCategoriesList }: Params) => {
+    user, userCategoryList, setUserCategoryList }: Params) => {
     if (user) {
         const { data, error } = await supabase.rpc('get_user_category_totals', {
             p_user_id: user?.user_id,
@@ -47,8 +47,8 @@ export const getUserCategories = async ({
             Alert.alert("Error al obtener categorías", error.message);
         }
         else {
-            if (JSON.stringify(data) !== JSON.stringify(userCategoriesList)) {
-                setUserCategoriesList(data);
+            if (JSON.stringify(data) !== JSON.stringify(userCategoryList)) {
+                setUserCategoryList(data);
             }
         }
     };

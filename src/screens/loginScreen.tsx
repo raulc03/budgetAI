@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Alert, AppState, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Alert, AppState, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { supabase } from '../api/supabase';
 
 AppState.addEventListener('change', (state) => {
@@ -24,7 +24,7 @@ export default function LoginScreen() {
             email: email,
             password: password,
         })
-        if (error) Alert.alert(error.message);
+        if (error) Alert.alert('Error al iniciar sesión', 'Revise el correo y/o contraseña');
         setLoading(false);
     }
 
@@ -36,7 +36,7 @@ export default function LoginScreen() {
                 lastname: lastName,
                 balance: 0
             }]);
-        if (error) { Alert.alert('Error al registrar usuario') }
+        if (error) { Alert.alert('Error en el registro', 'Error al registrar los datos') }
     }
 
     const onSignUp = async () => {
@@ -46,7 +46,7 @@ export default function LoginScreen() {
             password: password,
         });
 
-        if (error) Alert.alert("Error en el registro:", error.message);
+        if (error) Alert.alert("Error en el registro", 'Revisar el correo y/o contraseña');
         else {
             await registerUser(data.user?.id);
         }
@@ -87,19 +87,19 @@ export default function LoginScreen() {
                 placeholderTextColor='#666'
                 secureTextEntry={true}
                 value={password} />
-            <Pressable style={styles.button}
+            <TouchableOpacity style={styles.button}
                 onPress={onSignIn}
                 disabled={loading}
             >
                 <Text style={{ fontSize: 18, color: '#fff' }}>Iniciar sesión</Text>
-            </Pressable>
-            <Pressable style={[styles.button,
+            </TouchableOpacity>
+            <TouchableOpacity style={[styles.button,
             { backgroundColor: "#111111", marginTop: 0 }]}
                 onPress={onSignUp}
                 disabled={loading}
             >
                 <Text style={{ fontSize: 18, color: '#fff' }}>Registrar</Text>
-            </Pressable>
+            </TouchableOpacity>
         </View >
     );
 }

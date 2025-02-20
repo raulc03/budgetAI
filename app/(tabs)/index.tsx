@@ -23,7 +23,7 @@ export default function Index() {
     <SafeAreaView style={styles.container}>
       {session && session.user ?
         <HomeContextProvider session={session}>
-          <HomeScreen key={session.user.id} session={session} />
+          <HomeScreen key={session.user.id} />
         </HomeContextProvider> :
         <LoginScreen />}
     </SafeAreaView>

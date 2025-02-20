@@ -1,15 +1,16 @@
 import { View, StyleSheet } from 'react-native';
 import ActionButtons from './actionButtons';
 import CategoryList from './categoryList';
+import { useState } from 'react';
 
 export default function DetailView() {
-  console.log("Renderizando DetailView");
+  const [isExpenseActive, setIsExpenseActive] = useState<boolean>(true);
   return (
     <View style={styles.container}>
       {/* ActionButtons */}
-      <ActionButtons />
+      <ActionButtons isExpenseActive={isExpenseActive} setIsExpenseActive={setIsExpenseActive} />
       {/* CategoryList */}
-      <CategoryList />
+      <CategoryList isExpenseActive={isExpenseActive} />
     </View>
   );
 }

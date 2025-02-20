@@ -1,21 +1,25 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-export default function ActionButtons() {
-  console.log("Renderizando ActionButton");
-  const onPressButton = (text: string) => {
-    alert("Apretaste:  " + text)
+type ActionButtonProps = {
+  isExpenseActive: boolean;
+  setIsExpenseActive: (value: boolean) => void;
+}
+
+export default function ActionButtons({ isExpenseActive, setIsExpenseActive }: ActionButtonProps) {
+  const onPressButton = () => {
+    setIsExpenseActive(!isExpenseActive);
   }
   return (
     <View style={styles.container}>
-      <Pressable style={[styles.itemContainer, { backgroundColor: '#111111' }]}
-        onPress={() => onPressButton('Gastos')}>
+      <TouchableOpacity style={[styles.itemContainer, isExpenseActive &&
+        { backgroundColor: '#111111' }]} onPress={onPressButton}>
         <Text style={styles.item}>Gastos</Text>
-      </Pressable>
-      <Pressable style={styles.itemContainer}
-        onPress={() => onPressButton('Ingresos')}>
+      </TouchableOpacity>
+      <TouchableOpacity style={[styles.itemContainer, !isExpenseActive &&
+        { backgroundColor: '#111111' }]} onPress={onPressButton}>
         <Text style={styles.item}>Ingresos</Text>
-      </Pressable>
-    </View>
+      </TouchableOpacity>
+    </View >
   );
 }
 
@@ -23,7 +27,7 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    height: 60,
+    alignItems: 'center',
   },
   itemContainer: {
     flex: 1,
@@ -37,7 +41,7 @@ const styles = StyleSheet.create({
   },
   item: {
     color: '#fff',
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: 'semibold',
   }
 })

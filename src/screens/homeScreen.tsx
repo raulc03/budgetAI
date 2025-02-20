@@ -30,6 +30,5 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         paddingHorizontal: 10,
-        paddingTop: 15,
     },
 })

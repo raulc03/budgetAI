@@ -1,4 +1,4 @@
-import { Alert, Animated, Pressable, StyleSheet, Text, View } from "react-native";
+import { Alert, Animated, Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { useRef } from "react";
 import { useLoading } from "../context/LoadingContext";
@@ -7,7 +7,6 @@ import { useModal } from "../context/ModalContext";
 import { supabase } from "../api/supabase";
 
 export default function BalanceHeader() {
-  console.log("Renderizando BalanceHeader");
   const { setIsLoading } = useLoading();
   const { user } = useUser();
   const { setIsModal } = useModal();
@@ -39,9 +38,9 @@ export default function BalanceHeader() {
 
   return (
     <View style={styles.container}>
-      <Pressable onPress={logOut}>
+      <TouchableOpacity onPress={logOut}>
         <MaterialCommunityIcons name="logout" size={26} color="black" />
-      </Pressable>
+      </TouchableOpacity>
       {user ?
         <>
           <Pressable
